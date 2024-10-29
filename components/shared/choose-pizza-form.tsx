@@ -30,9 +30,9 @@ export const ChoosePizzaForm: React.FC<Props> = ({ className, name, imageUrl, in
   }
 
   return (
-    <div className={cn(className, 'flex flex-1')}>
+    <div className='flex flex-1'>
       <ProductImage imageUrl={imageUrl} size={size} />
-      <div className='w-[490px] bg-[#f7f6f5] p-7'>
+      <div className={cn(className, 'w-[490px] bg-[#f7f6f5] p-7')}>
         <Title text={name} size='md' className='font-extrabold mb-1' />
         <p className='text-gray-400'>{size} см, {mapPizzaTypes[type]} пицца</p>
         <div className='flex flex-col gap-2 mt-2'>
