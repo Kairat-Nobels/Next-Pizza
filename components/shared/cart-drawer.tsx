@@ -25,16 +25,17 @@ interface Props {
 }
 
 export const CartDrawer: React.FC<PropsWithChildren<Props>> = ({ className, children }) => {
-  const [totalAmount, fetchCartItems, updateItemQuantity, items] = useCartStore(state => [
+  const [totalAmount, items, fetchCartItems, updateItemQuantity, removeCartItem] = useCartStore(state => [
     state.totalAmount,
+    state.items,
     state.fetchCartItems,
     state.updateItemQuantity,
-    state.items,
+    state.removeCartItem,
   ]);
 
   React.useEffect(() => {
     fetchCartItems();
-  }, []);
+  }, [fetchCartItems]);
 
   const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
     const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1;
@@ -61,6 +62,7 @@ export const CartDrawer: React.FC<PropsWithChildren<Props>> = ({ className, chil
                 quantity={item.quantity}
                 details={getCartItemsDetails(item.pizzaType as PizzaType, item.pizzaSize as PizzaSize, item.ingredients)}
                 onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
+                onClickRemove={() => removeCartItem(item.id)}
               />
             ))
           }
@@ -77,10 +79,11 @@ export const CartDrawer: React.FC<PropsWithChildren<Props>> = ({ className, chil
               <span>{totalAmount} ₽</span>
             </div>
 
-            <Link href="/cart">
+            <Link href={totalAmount === 0 ? '' : "/cart"} className={cn(totalAmount === 0 && 'cursor-not-allowed')}>
               <Button
                 type='submit'
-                className='w-full h-12 text-base'
+                className='w-full h-12 text-base disabled:cursor-not-allowed'
+                disabled={totalAmount === 0}
               >
                 Оформить заказ
                 <ArrowRight className='w-5 ml-2' />

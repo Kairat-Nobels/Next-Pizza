@@ -16,14 +16,18 @@ interface Props {
   imageUrl: string;
   ingredients: any[];
   items: ProductItem[];
-  onClickAddCart?: VoidFunction;
+  loading?: boolean;
+  onSubmit: (itemId: number, ingredients: number[]) => void;
 }
 
-export const ChoosePizzaForm: React.FC<Props> = ({ className, name, imageUrl, ingredients, items, onClickAddCart }) => {
-  const { type, size, selectedIngredients, availableSizes, setSize, setType, addIngredient } = usePizzaOptions(items);
+export const ChoosePizzaForm: React.FC<Props> = ({ className, name, imageUrl, ingredients, items, loading, onSubmit }) => {
+  const { type, size, selectedIngredients, availableSizes, currentItemId, setSize, setType, addIngredient } = usePizzaOptions(items);
 
   const totalPrice = calcTotalPizzaPrice(items, type, size, ingredients, selectedIngredients);
 
+  const handleClickAdd = () => {
+    if (currentItemId) onSubmit(currentItemId, Array.from(selectedIngredients));
+  }
 
   return (
     <div className={cn(className, 'flex flex-1')}>
@@ -58,7 +62,7 @@ export const ChoosePizzaForm: React.FC<Props> = ({ className, name, imageUrl, in
             ))}
           </div>
         </div>
-        <Button onClick={onClickAddCart} className='h-[55px] px-10 text-base rounded-[18px] w-full mt-5'>Добавить в корзину за {totalPrice} сом</Button>
+        <Button loading={loading} onClick={handleClickAdd} className='h-[55px] px-10 text-base rounded-[18px] w-full mt-5'>Добавить в корзину за {totalPrice} сом</Button>
       </div>
     </div>
   );
